@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * Tcategory_ACL Extension
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   Technooze
+ * @package    Tcategoryacl
+ * @copyright  Copyright (c) 2014 dltr.org
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * @category   Technooze
+ * @package    Tcategoryacl
+ * @author     Damodar Bashyal @dbashyal
+ */
+ -->
+<config>
+    <modules>
+        <Technooze_Tcategoryacl>
+            <version>0.1.0</version>
+        </Technooze_Tcategoryacl>
+    </modules>
+    <frontend>
+        <routers>
+            <tcategoryacl>
+                <use>standard</use>
+                <args>
+                    <module>Technooze_Tcategoryacl</module>
+                    <frontName>tcategoryacl</frontName>
+                </args>
+            </tcategoryacl>
+        </routers>
+        <layout>
+            <updates>
+                <tcategoryacl>
+                    <file>technooze/tcategoryacl/tcategoryacl.xml</file>
+                </tcategoryacl>
+            </updates>
+        </layout>
+        <events>
+            <core_block_abstract_prepare_layout_after>
+                <observers>
+                    <tcategoryacl_filter_category_data>
+                        <type>singleton</type>
+                        <class>tcategoryacl/observer</class>
+                        <method>ajaxed</method>
+                    </tcategoryacl_filter_category_data>
+                </observers>
+            </core_block_abstract_prepare_layout_after>
+        </events>
+    </frontend>
+    <admin>
+        <routers>
+			<tcategoryacl>
+				<use>admin</use>
+				<args>
+					<module>Technooze_Tcategoryacl</module>
+					<frontName>tcategoryacl</frontName>
+				</args>
+			</tcategoryacl>
+        </routers>
+    </admin>
+    <adminhtml>
+		<!--<menu>
+			<catalog>
+				<children>
+					<tcategoryacl module="tcategoryacl">
+						<title>Tcategoryacl</title>
+						<sort_order>20</sort_order>               
+						<children>
+							<items module="tcategoryacl">
+								<title>Manage Items</title>
+								<sort_order>0</sort_order>
+								<action>tcategoryacl/adminhtml_tcategoryacl</action>
+							</items>
+						</children>
+					</tcategoryacl>
+				</children>
+			</catalog>
+		</menu>-->
+		<layout>
+			<updates>
+				<tcategoryacl>
+					<file>technooze/tcategoryacl/tcategoryacl.xml</file>
+				</tcategoryacl>
+			</updates>
+		</layout>
+        <events>
+            <catalog_category_save_after>
+                <observers>
+                    <tcategoryacl_save_category_data>
+                        <type>singleton</type>
+                        <class>tcategoryacl/observer</class>
+                        <method>saveCategoryTabData</method>
+                    </tcategoryacl_save_category_data>
+                </observers>
+            </catalog_category_save_after>
+        </events>
+    </adminhtml>
+    <global>
+        <models>
+            <tcategoryacl>
+                <class>Technooze_Tcategoryacl_Model</class>
+                <resourceModel>tcategoryacl_mysql4</resourceModel>
+            </tcategoryacl>
+            <tcategoryacl_mysql4>
+                <class>Technooze_Tcategoryacl_Model_Mysql4</class>
+                <entities>
+                    <tcategoryacl>
+                        <table>tcategoryacl</table>
+                    </tcategoryacl>
+                    <categories>
+                        <table>tcategoryacl_categories</table>
+                    </categories>
+                </entities>
+            </tcategoryacl_mysql4>
+        </models>
+        <resources>
+            <tcategoryacl_setup>
+                <setup>
+                    <module>Technooze_Tcategoryacl</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </tcategoryacl_setup>
+            <tcategoryacl_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </tcategoryacl_write>
+            <tcategoryacl_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </tcategoryacl_read>
+        </resources>
+        <blocks>
+            <tcategoryacl>
+                <class>Technooze_Tcategoryacl_Block</class>
+            </tcategoryacl>
+            <adminhtml>
+                <rewrite>
+                    <catalog_category_tabs>Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tabs</catalog_category_tabs>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        <helpers>
+            <tcategoryacl>
+                <class>Technooze_Tcategoryacl_Helper</class>
+            </tcategoryacl>
+        </helpers>
+    </global>
+</config>

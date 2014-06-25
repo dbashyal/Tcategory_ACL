@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <tcategoryacl_adminhtml_tcategoryacl_index>
+		<reference name="content">
+            <block type="tcategoryacl/adminhtml_tcategoryacl" name="tcategoryacl" />
+        </reference>
+    </tcategoryacl_adminhtml_tcategoryacl_index>
+
+    <tcategoryacl_adminhtml_category_index>
+        <reference name="root">
+            <action method="setTemplate"><template>technooze/tcategoryacl/ajax.phtml</template></action>
+        </reference>
+		<reference name="content">
+            <block type="tcategoryacl/adminhtml_catalog_category_tab_tcategoryacl" name="category.tcategoryacl.grid" />
+        </reference>
+    </tcategoryacl_adminhtml_category_index>
+</layout>
