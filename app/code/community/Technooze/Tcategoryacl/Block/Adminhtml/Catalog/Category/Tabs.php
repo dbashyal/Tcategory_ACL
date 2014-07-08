@@ -38,13 +38,13 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tabs extends Mage_
      */
     protected function _prepareLayout()
     {
-        $this->addTab('tcategoryacl', array(
-            'label'     => Mage::helper('tcategoryacl')->__('Category Permissions'),
+        $this->addTabAfter('tcategoryacl', array(
+            'label'     => Mage::helper('tcategoryacl')->__('Group Permissions'),
             'content'   => $this->getLayout()->createBlock(
                 'tcategoryacl/adminhtml_catalog_category_tab_tcategoryacl',
                 'category.tcategoryacl.grid'
             )->toHtml(),
-        ));
+        ), 'products');
         return parent::_prepareLayout();
     }
 }

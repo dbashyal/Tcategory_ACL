@@ -20,7 +20,7 @@
  * @package    Tcategoryacl
  * @author     Damodar Bashyal @dbashyal
  */
-class Technooze_Tcategoryacl_Model_Groups extends Mage_Customer_Model_Group
+class Technooze_Tcategoryacl_Model_Groups extends Technooze_Schoolgroup_Model_Schoolgroup
 {
     private $_groupsArray = array();
 
@@ -29,9 +29,10 @@ class Technooze_Tcategoryacl_Model_Groups extends Mage_Customer_Model_Group
      */
     public function getGroupsArray(){
         if(empty($this->_groupsArray)){
-            $this->_groupsArray = array('-1' => ' ');
-            foreach($this->getCollection() as $group){
-                $this->_groupsArray[$group->getCustomerGroupId()] = $group->getCustomerGroupId() . ' (' . $group->getCustomerGroupCode() . ')';
+            $this->_groupsArray = array();/*'0' => ' '*/
+            $collection = $this->getCollection()->addFieldToFilter('school_group_status', 1);
+            foreach($collection as $group){
+                $this->_groupsArray[$group->getSchoolGroupId()] = $group->getSchoolGroupId() . ' (' . $group->getSchoolGroupCode() . ')';
             }
         }
         return $this->_groupsArray;

@@ -49,8 +49,8 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Widget_Grid_Column_Renderer_Datetim
         //<![CDATA[
             var calendarSetupObject = {
                 inputField  : "' . $id . '",
-                ifFormat    : "%Y-%m-%e %H:%M:%S",
-                showsTime   : "true",
+                ifFormat    : "%Y-%m-%e", /* %H:%M:%S*/
+                showsTime   : false,
                 button      : "' . $id . '_trig",
                 align       : "Bl",
                 singleClick : true

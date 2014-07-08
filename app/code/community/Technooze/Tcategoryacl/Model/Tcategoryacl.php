@@ -27,4 +27,39 @@ class Technooze_Tcategoryacl_Model_Tcategoryacl extends Mage_Core_Model_Abstract
         parent::_construct();
         $this->_init('tcategoryacl/tcategoryacl');
     }
+
+    public function removeInactive(){
+        $collection = $this->getCollection();
+        $collection->addFieldToFilter('status', '0');
+        $count = $collection->count();
+
+        foreach($collection as $row){
+            $row->delete();
+        }
+        return $count;
+    }
+
+    public function updateFieldStatus($val = 0){
+        /**
+         * Get the resource model
+         */
+        $resource = Mage::getSingleton('core/resource');
+
+        /**
+         * Retrieve the write connection
+         */
+        $writeConnection = $resource->getConnection('core_write');
+
+        /**
+         * Retrieve our table name
+         */
+        $table = $resource->getTableName('tcategoryacl');
+
+        $query = "UPDATE {$table} SET status = '{$val}'";
+
+        /**
+         * Execute the query
+         */
+        $writeConnection->query($query);
+    }
 }

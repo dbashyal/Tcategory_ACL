@@ -60,24 +60,31 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tab_Tcategoryacl e
         switch($column->getId()){
             case 'selected_tcategoryacl':
                 if (empty($tcategoryaclIds)) {
-                    $tcategoryaclIds = array(0);
+                    $tcategoryaclIds = 0;
                 }
+                //$this->getCollection()->addFieldToFilter('category_id', $this->getCategory()->getId());
                 if ($column->getFilter()->getValue()) {
-                    $this->getCollection()->addFieldToFilter('tcategoryacl_id', array('in'=>$tcategoryaclIds));
+                    $this->removeRightJoin();
+                    $this->getCollection()->clear()->addFieldToFilter('tcategoryacl_id', array('in'=>$tcategoryaclIds));
                 } elseif(!empty($tcategoryaclIds)) {
+                    $this->getCollection()->clear();
                     $this->getCollection()->addFieldToFilter('tcategoryacl_id', array('nin'=>$tcategoryaclIds));
+                    //$this->getCollection()->addFieldToFilter('school_group.school_group_id', array('nin'=>$this->_getSelectedSchoolGroupIds()));
+                    $this->setCollection($this->insertFakeIdsToCollection($this->getCollection()));
                 }
                 break;
-            case 'group_id':
-            case 'allow_from':
+            /*case 'allow_from':
             case 'allow_to':
-                $this->resetCollection();
                 $this->getCollection()->addFieldToFilter($column->getId(), array('like'=>$column->getFilter()->getValue()));
-                $this->getCollection()->addFieldToFilter('status', '1');
-                break;
+                break;*/
             default: parent::_addColumnFilterToCollection($column);
         }
+
         return $this;
+    }
+
+    private function removeRightJoin(){
+        $this->getCollection()->clear()->getSelect()->reset('RIGHT JOIN');
     }
 
     private function resetCollection(){
@@ -92,6 +99,24 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tab_Tcategoryacl e
         return parent::_prepareCollection();
     }
 
+    protected function insertFakeIdsToCollection($collection)
+    {
+        $i = 0;
+        foreach($collection as $v){
+            // lets have fake ids for empty tcategoryacl_id, so checkbox can be selected
+            if(!$v->getData('tcategoryacl_id')){
+                $v->setData('tcategoryacl_id', '0' . $this->getCategory()->getId() . $i++);
+                $v->setId($v->getData('tcategoryacl_id'));
+            }
+
+            // lets auto select different groups in each row
+            if(!$v->getData('group_id')){
+                $v->setData('group_id', $v->getData('school_group_id'));
+            }
+        }
+        return $collection;
+    }
+
     /**
      * @return Mage_Adminhtml_Block_Widget_Grid
      */
@@ -102,35 +127,11 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tab_Tcategoryacl e
         }
         /* @var $collection Technooze_Tcategoryacl_Model_Mysql4_Tcategoryacl_Collection */
         $collection = Mage::getModel('tcategoryacl/tcategoryacl')->getCollection();
-        $collection->getSelect()->joinRight('customer_group', 'customer_group_id=group_id');
+        $collection->getSelect()->joinRight('school_group', 'school_group_id=group_id');
+        $collection->addFieldToFilter('school_group_status', 1);
+        //$collection->getSelect()->group('school_group.school_group_id');
 
-        $i = 0;
-        $currentTimestamp = Mage::getModel('core/date')->timestamp(time());
-        $date = date('Y-m-d 00:00:00', $currentTimestamp);
-
-        foreach($collection as $v){
-            // lets have fake ids for empty tcategoryacl_id, so checkbox can be selected
-            if(!$v->getData('tcategoryacl_id')){
-                $v->setData('tcategoryacl_id', $this->getCategory()->getId() . $i++);
-                $v->setId($v->getData('tcategoryacl_id'));
-            }
-
-            // lets auto select different groups in each row
-            if(!$v->getData('group_id')){
-                $v->setData('group_id', $v->getData('customer_group_id'));
-            }
-
-            // lets auto select different groups in each row
-            if(!$v->getData('allow_from')){
-                $v->setData('allow_from', $date);
-            }
-
-            // lets auto select different groups in each row
-            if(!$v->getData('allow_to')){
-                $v->setData('allow_to', $date);
-            }
-        }
-
+        $collection = $this->insertFakeIdsToCollection($collection);
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -193,13 +194,29 @@ class Technooze_Tcategoryacl_Block_Adminhtml_Catalog_Category_Tab_Tcategoryacl e
     /**
      * @return array
      */
+    protected function _getSelectedSchoolGroupIds()
+    {
+        $selected_tcategoryacl = array();
+        $category = $this->getCategory();
+        $collection = Mage::getModel('tcategoryacl/tcategoryacl')->getCollection();
+        $collection->addFieldToFilter('category_id', $category->getId());
+
+        foreach($collection as $v)
+        {
+            $selected_tcategoryacl[] = $v->getGroupId();
+        }
+        return $selected_tcategoryacl;
+    }
+
+    /**
+     * @return array
+     */
     protected function _getSelectedTcategoryacl()
     {
         $selected_tcategoryacl = array();
         $category = $this->getCategory();
         $collection = Mage::getModel('tcategoryacl/tcategoryacl')->getCollection();
         $collection->addFieldToFilter('category_id', $category->getId());
-        $collection->load();
 
         foreach($collection as $v)
         {

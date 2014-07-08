@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <sections>
+        <tcategoryacl translate="label" module="tcategoryacl">
+            <label>Groups Category Permission</label>
+            <tab>school</tab>
+            <sort_order>20</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label" module="tcategoryacl">
+                    <label>General</label>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <is_active translate="label" module="tcategoryacl">
+                            <label>Enable Category Permission Module</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_enabledisable</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </is_active>
+                        <display_entity_hidden_msg>
+                            <label>Display a message when a hidden entity is accessed?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <is_active>1</is_active>
+                            </depends>
+                        </display_entity_hidden_msg>
+                        <entity_hidden_msg_guest translate="label" module="tcategoryacl">
+                            <label>Message for guests</label>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <is_active>1</is_active>
+                                <display_entity_hidden_msg>1</display_entity_hidden_msg>
+                            </depends>
+                        </entity_hidden_msg_guest>
+                        <entity_hidden_msg_customer translate="label" module="tcategoryacl">
+                            <label>Message for logged in customers</label>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <is_active>1</is_active>
+                                <display_entity_hidden_msg>1</display_entity_hidden_msg>
+                            </depends>
+                        </entity_hidden_msg_customer>
+                        <auto_refresh_block_cache translate="label comment" module="tcategoryacl">
+                            <label>Auto refresh CATEGORY cache</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>130</sort_order>
+                            <!-- only settable in global scope because that is where categories are saved -->
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment><![CDATA[Automatically refresh the CATEGORY BLOCK HTML cache to update the category navigation when the visibility setting for a category is changed.]]></comment>
+                            <depends>
+                                <is_active>1</is_active>
+                            </depends>
+                        </auto_refresh_block_cache>
+                    </fields>
+                </general>
+            </groups>
+        </tcategoryacl>
+    </sections>
+</config>

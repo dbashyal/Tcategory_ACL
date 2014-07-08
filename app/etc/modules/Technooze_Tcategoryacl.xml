@@ -12,6 +12,14 @@
         <Technooze_Tcategoryacl>
             <active>true</active>
             <codePool>community</codePool>
+            <depends>
+                <Mage_Core />
+                <Mage_Catalog />
+                <Mage_Index />
+                <Mage_CatalogSearch/>
+                <Mage_Wishlist/>
+                <Mage_Customer/>
+            </depends>
         </Technooze_Tcategoryacl>
     </modules>
 </config> 

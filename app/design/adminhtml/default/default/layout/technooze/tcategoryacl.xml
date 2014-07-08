@@ -8,7 +8,7 @@
 
     <tcategoryacl_adminhtml_category_index>
         <reference name="root">
-            <action method="setTemplate"><template>technooze/tcategoryacl/ajax.phtml</template></action>
+            <action method="setTemplate"><template>technooze/common/ajax.phtml</template></action>
         </reference>
 		<reference name="content">
             <block type="tcategoryacl/adminhtml_catalog_category_tab_tcategoryacl" name="category.tcategoryacl.grid" />
