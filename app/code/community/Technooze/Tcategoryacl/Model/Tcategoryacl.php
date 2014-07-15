@@ -22,10 +22,21 @@
  */
 class Technooze_Tcategoryacl_Model_Tcategoryacl extends Mage_Core_Model_Abstract
 {
+
+    /* @var $_helper Technooze_Tcategorystatus_Helper_Data */
+    private $_helper = null;
+
     public function _construct()
     {
         parent::_construct();
         $this->_init('tcategoryacl/tcategoryacl');
+    }
+
+    public function getHelper(){
+        if(null === $this->_helper){
+            $this->_helper = Mage::helper('tcategorystatus');
+        }
+        return $this->_helper;
     }
 
     public function removeInactive(){
@@ -37,6 +48,50 @@ class Technooze_Tcategoryacl_Model_Tcategoryacl extends Mage_Core_Model_Abstract
             $row->delete();
         }
         return $count;
+    }
+
+    public function getOrderAllowedDateRange()
+    {
+        /* @var $group Technooze_Schoolgroup_Model_Schoolgroup */
+        $group = Mage::getModel('schoolgroup/schoolgroup')->getCurrentCustomerSchoolGroup();
+        if(!$group || !$group->getId()){
+            return false;
+        }
+
+        /* @var $collection Technooze_Tcategoryacl_Model_Mysql4_Tcategoryacl_Collection */
+        $collection = Mage::getModel('tcategoryacl/tcategoryacl')->getCollection();
+        $collection
+          ->addFieldToFilter('group_id', $group->getId())
+          ->addFieldToFilter('allow_from', array('lteq' => $this->getHelper()->getDateToday()))
+          ->addFieldToFilter('allow_to', array('gteq' => $this->getHelper()->getDateToday()));
+
+        // if we get result, that means customer can still buy it, else NO.
+        if(!$collection->count()){
+            return false;
+        }
+        return $collection->getFirstItem()->getData();
+    }
+
+    public function getNextOrderAllowedDate()
+    {
+        /* @var $group Technooze_Schoolgroup_Model_Schoolgroup */
+        $group = Mage::getModel('schoolgroup/schoolgroup')->getCurrentCustomerSchoolGroup();
+        if(!$group || !$group->getId()){
+            return false;
+        }
+
+        /* @var $collection Technooze_Tcategoryacl_Model_Mysql4_Tcategoryacl_Collection */
+        $collection = Mage::getModel('tcategoryacl/tcategoryacl')->getCollection();
+        $collection
+          ->addFieldToFilter('group_id', $group->getId())
+          ->addFieldToFilter('allow_from', array('gt' => $this->getHelper()->getDateToday()))
+          ->setOrder('allow_from','ASC');
+
+        // if we get result, that means customer can still buy it, else NO.
+        if(!$collection->count()){
+            return false;
+        }
+        return $collection->getFirstItem()->getData();
     }
 
     public function updateFieldStatus($val = 0){
